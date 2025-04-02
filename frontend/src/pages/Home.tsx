@@ -63,7 +63,6 @@ const generateBoard = (): Cell[][] => {
 export const Home = () => {
   const [board, setBoard] = useState<Cell[][]>(generateBoard);
   const [gameOver, setGameOver] = useState(false);
-  console.log(board);
 
   // セルを開く処理
   const revealCell = (y: number, x: number) => {
