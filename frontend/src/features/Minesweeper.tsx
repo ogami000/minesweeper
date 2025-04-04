@@ -3,18 +3,30 @@ import { Timer } from "../components/Timer";
 import { ResetButton } from "../components/ResetButton";
 
 export const Minesweeper = () => {
-  const { board, revealCell, gameOver, time, toggleFlag, resetGame } =
-    useMinesweeper();
+  const {
+    board,
+    revealCell,
+    gameOver,
+    gameClear,
+    flagCount,
+    time,
+    toggleFlag,
+    resetGame,
+  } = useMinesweeper();
 
   return (
     <div>
-      <h1 className="text-4xl text-center my-4">Minesweeper</h1>
+      <h1 className="text-4xl text-center my-6">Minesweeper</h1>
       <div className="flex justify-center items-center gap-10">
         <Timer time={time} />
+        <span className="w-13"> 🚩: {flagCount}</span>
         <ResetButton onReset={resetGame} />
       </div>
-      <div className="text-center pt-4 text-3xl text-red-500">
+      <div
+        className={`text-center pt-4 text-3xl ${gameOver ? "text-red-500" : "text-green-500"}`}
+      >
         {gameOver && "GameOver"}
+        {gameClear && "GameClear"}
       </div>
       <div className="flex justify-center mt-20">
         <table className="border border-black border-collapse">

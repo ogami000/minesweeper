@@ -3,5 +3,5 @@ type TimerProps = {
 };
 
 export const Timer = ({ time }: TimerProps) => {
-  return <div>Time: {time}</div>;
+  return <span className="w-20">Time: {time}</span>;
 };
