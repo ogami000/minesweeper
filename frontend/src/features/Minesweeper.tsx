@@ -1,6 +1,7 @@
 import { useMinesweeper } from "../hooks/useMinesweeper";
 import { Timer } from "../components/Timer";
 import { ResetButton } from "../components/ResetButton";
+import { Difficulty } from "../types/minesweeper";
 
 export const Minesweeper = () => {
   const {
@@ -12,23 +13,37 @@ export const Minesweeper = () => {
     time,
     toggleFlag,
     resetGame,
+    setCurrentDifficulty,
+    currentDifficulty,
   } = useMinesweeper();
 
   return (
     <div>
       <h1 className="text-4xl text-center my-6">Minesweeper</h1>
       <div className="flex justify-center items-center gap-10">
+        <div className="flex justify-center items-center">
+          <label className="mr-2 font-bold">難易度:</label>
+          <select
+            className="border border-gray-400 p-1 rounded"
+            value={currentDifficulty}
+            onChange={(e) => setCurrentDifficulty(e.target.value as Difficulty)}
+          >
+            <option value="easy">低</option>
+            <option value="medium">中</option>
+            <option value="hard">高</option>
+          </select>
+        </div>
         <Timer time={time} />
         <span className="w-13"> 🚩: {flagCount}</span>
         <ResetButton onReset={resetGame} />
       </div>
       <div
-        className={`text-center pt-4 text-3xl ${gameOver ? "text-red-500" : "text-green-500"}`}
+        className={`text-center pt-6 text-3xl ${gameOver ? "text-red-500" : "text-green-500"}`}
       >
         {gameOver && "GameOver"}
         {gameClear && "GameClear"}
       </div>
-      <div className="flex justify-center mt-20">
+      <div className="flex justify-center mt-10">
         <table className="border border-black border-collapse">
           <tbody>
             {board.map((row, y) => (
@@ -38,8 +53,8 @@ export const Minesweeper = () => {
                     key={`${y}-${x}`}
                     onClick={() => revealCell({ y, x })}
                     onContextMenu={(e) => toggleFlag({ y, x }, e)}
-                    className={`w-10 h-10 text-center align-middle cursor-pointer border border-black
-                    ${cell.isRevealed ? (cell.isMine ? "bg-red-500" : "bg-gray-300") : "bg-gray-100"}`}
+                    className={`w-8 h-8 text-center align-middle  border border-black
+                    ${cell.isRevealed ? (cell.isMine ? "bg-red-500" : "bg-gray-300") : "bg-gray-100 cursor-pointer hover:bg-green-200 "}`}
                   >
                     {cell.isRevealed
                       ? cell.isMine

@@ -1,36 +1,30 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTimer } from "./useTimer";
+import {
+  Cell,
+  defaultCell,
+  Difficulty,
+  DIFFICULTY_SETTINGS,
+  Position,
+} from "../types/minesweeper";
 
-const BOARD_SIZE = 10;
-const MINE_COUNT = 20;
-const INITIAL_REVEAL_COUNT = 6;
-const ADDITIONAL_REVEAL_COUNT = 8;
-
-const defaultCell = {
-  isMine: false,
-  isRevealed: false,
-  isFlagged: false,
-  adjacentMines: 0,
+const isInsideBoard = (pos: Position, boardSize: number) => {
+  return pos.y >= 0 && pos.x >= 0 && pos.y < boardSize && pos.x < boardSize;
 };
 
-type Cell = typeof defaultCell;
-type Position = { y: number; x: number };
-
-const isInsideBoard = (pos: Position) => {
-  return pos.y >= 0 && pos.x >= 0 && pos.y < BOARD_SIZE && pos.x < BOARD_SIZE;
-};
-
-// ボード生成（最初のクリック位置を考慮）
-const generateBoard = (firstClick: Position | null): Cell[][] => {
-  const board: Cell[][] = Array.from({ length: BOARD_SIZE }, () =>
-    Array.from({ length: BOARD_SIZE }, () => ({ ...defaultCell }))
+const generateBoard = (
+  firstClick: Position | null,
+  boardSize: number,
+  mineCount: number
+): Cell[][] => {
+  const board: Cell[][] = Array.from({ length: boardSize }, () =>
+    Array.from({ length: boardSize }, () => ({ ...defaultCell }))
   );
 
-  // MINE_COUNTの数だけ爆弾ランダム生成
   let minesPlaced = 0;
-  while (minesPlaced < MINE_COUNT) {
-    const y = Math.floor(Math.random() * BOARD_SIZE);
-    const x = Math.floor(Math.random() * BOARD_SIZE);
+  while (minesPlaced < mineCount) {
+    const y = Math.floor(Math.random() * boardSize);
+    const x = Math.floor(Math.random() * boardSize);
 
     if (
       (!firstClick || y !== firstClick.y || x !== firstClick.x) &&
@@ -41,7 +35,6 @@ const generateBoard = (firstClick: Position | null): Cell[][] => {
     }
   }
 
-  // 周囲の爆弾数を計算
   const getMineCount = (pos: Position) => {
     return [-1, 0, 1].reduce(
       (count, dy) =>
@@ -49,7 +42,8 @@ const generateBoard = (firstClick: Position | null): Cell[][] => {
         [-1, 0, 1].reduce((c, dx) => {
           const ny = pos.y + dy,
             nx = pos.x + dx;
-          return isInsideBoard({ y: ny, x: nx }) && board[ny][nx].isMine
+          return isInsideBoard({ y: ny, x: nx }, boardSize) &&
+            board[ny][nx].isMine
             ? c + 1
             : c;
         }, 0),
@@ -62,34 +56,30 @@ const generateBoard = (firstClick: Position | null): Cell[][] => {
   );
 };
 
-const checkGameClear = (board: Cell[][]) => {
-  return board.every((row) =>
-    row.every((cell) => cell.isMine || cell.isRevealed)
-  );
-};
+const checkGameClear = (board: Cell[][]) =>
+  board.every((row) => row.every((cell) => cell.isMine || cell.isRevealed));
 
-const countFlags = (board: Cell[][]): number => {
-  return board.reduce(
+const countFlags = (board: Cell[][]): number =>
+  board.reduce(
     (total, row) => total + row.filter((cell) => cell.isFlagged).length,
     0
   );
-};
 
-// 隣接するセルを開放
 const expandCells = (
   board: Cell[][],
   startPos: Position,
-  openCount: number
+  openCount: number,
+  boardSize: number
 ): Cell[][] => {
   const newBoard = board.map((row) => row.map((cell) => ({ ...cell })));
   const opened = new Set<string>();
   const queue: Position[] = [startPos];
 
   while (queue.length > 0 && opened.size < openCount) {
-    const { x, y } = queue.shift()!;
+    const { y, x } = queue.shift()!;
     if (
-      opened.has(`${x},${y}`) ||
-      !isInsideBoard({ x, y }) ||
+      opened.has(`${y},${x}`) ||
+      !isInsideBoard({ y, x }, boardSize) ||
       newBoard[y][x].isRevealed ||
       newBoard[y][x].isMine
     ) {
@@ -97,14 +87,17 @@ const expandCells = (
     }
 
     newBoard[y][x].isRevealed = true;
-    opened.add(`${x},${y}`);
+    opened.add(`${y},${x}`);
 
     [-1, 0, 1].forEach((dy) => {
       [-1, 0, 1].forEach((dx) => {
-        const nx = x + dx,
-          ny = y + dy;
-        if (isInsideBoard({ x: nx, y: ny }) && !opened.has(`${nx},${ny}`)) {
-          queue.push({ x: nx, y: ny });
+        const ny = y + dy,
+          nx = x + dx;
+        if (
+          isInsideBoard({ y: ny, x: nx }, boardSize) &&
+          !opened.has(`${ny},${nx}`)
+        ) {
+          queue.push({ y: ny, x: nx });
         }
       });
     });
@@ -114,27 +107,38 @@ const expandCells = (
 };
 
 export const useMinesweeper = () => {
-  const [board, setBoard] = useState<Cell[][]>(generateBoard(null));
+  const [currentDifficulty, setCurrentDifficulty] =
+    useState<Difficulty>("medium");
+  const {
+    size: boardSize,
+    mines: mineCount,
+    initialReveal,
+    additionalReveal,
+  } = DIFFICULTY_SETTINGS[currentDifficulty];
+
+  const [board, setBoard] = useState<Cell[][]>(
+    generateBoard(null, boardSize, mineCount)
+  );
   const [firstClick, setFirstClick] = useState<Position | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [gameClear, setGameClear] = useState(false);
-  const [flagCount, setFlagCount] = useState(MINE_COUNT);
+  const [flagCount, setFlagCount] = useState(mineCount);
   const { time, isRunning, startTimer, stopTimer, resetTimer } = useTimer();
 
-  // セルを開放
   const revealCell = useCallback(
     (pos: Position) => {
       if (gameOver || gameClear) return;
 
       if (!firstClick) {
         setFirstClick(pos);
-        const newBoard = generateBoard(pos);
+        startTimer();
+        const newBoard = generateBoard(pos, boardSize, mineCount);
         setBoard(
           expandCells(
             newBoard,
             pos,
-            Math.floor(Math.random() * ADDITIONAL_REVEAL_COUNT) +
-              INITIAL_REVEAL_COUNT
+            Math.floor(Math.random() * additionalReveal) + initialReveal,
+            boardSize
           )
         );
         return;
@@ -160,7 +164,7 @@ export const useMinesweeper = () => {
               const ny = pos.y + dy;
               const nx = pos.x + dx;
               if (
-                isInsideBoard({ y: ny, x: nx }) &&
+                isInsideBoard({ y: ny, x: nx }, boardSize) &&
                 !newBoard[ny][nx].isRevealed
               ) {
                 revealCell({ y: ny, x: nx });
@@ -180,7 +184,16 @@ export const useMinesweeper = () => {
         return newBoard;
       });
     },
-    [firstClick, gameClear, gameOver]
+    [
+      additionalReveal,
+      boardSize,
+      firstClick,
+      gameClear,
+      gameOver,
+      initialReveal,
+      mineCount,
+      startTimer,
+    ]
   );
 
   const toggleFlag = useCallback(
@@ -194,11 +207,10 @@ export const useMinesweeper = () => {
         isFlagged: !newBoard[pos.y][pos.x].isFlagged,
       };
 
-      setFlagCount(MINE_COUNT - countFlags(newBoard));
-
+      setFlagCount(mineCount - countFlags(newBoard));
       setBoard(newBoard);
     },
-    [board, gameClear, gameOver]
+    [board, gameClear, gameOver, mineCount]
   );
 
   useEffect(() => {
@@ -207,20 +219,17 @@ export const useMinesweeper = () => {
 
   const resetGame = useCallback(() => {
     resetTimer();
-    startTimer();
+    stopTimer();
     setGameOver(false);
     setGameClear(false);
-    setFlagCount(MINE_COUNT);
-    setBoard(generateBoard(null));
+    setFlagCount(mineCount);
+    setBoard(generateBoard(null, boardSize, mineCount));
     setFirstClick(null);
-  }, [
-    resetTimer,
-    startTimer,
-    setGameOver,
-    setGameClear,
-    setFlagCount,
-    setBoard,
-  ]);
+  }, [boardSize, mineCount, resetTimer, stopTimer]);
+
+  useEffect(() => {
+    resetGame();
+  }, [currentDifficulty, resetGame]);
 
   return {
     board,
@@ -232,5 +241,7 @@ export const useMinesweeper = () => {
     time,
     isRunning,
     resetGame,
+    setCurrentDifficulty,
+    currentDifficulty,
   };
 };
