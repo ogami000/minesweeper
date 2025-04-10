@@ -1,9 +1,0 @@
-current directory: /usr/local/bundle/ruby/3.4.0/gems/websocket-driver-0.7.7/ext/websocket-driver
-/usr/local/bin/ruby extconf.rb
-creating Makefile
-
-current directory: /usr/local/bundle/ruby/3.4.0/gems/websocket-driver-0.7.7/ext/websocket-driver
-make DESTDIR\= sitearchdir\=./.gem.20250410-1-10cvw6 sitelibdir\=./.gem.20250410-1-10cvw6 clean
-current directory: /usr/local/bundle/ruby/3.4.0/gems/websocket-driver-0.7.7/ext/websocket-driver
-make DESTDIR\= sitearchdir\=./.gem.20250410-1-10cvw6 sitelibdir\=./.gem.20250410-1-10cvw6
-make failedNo such file or directory - make

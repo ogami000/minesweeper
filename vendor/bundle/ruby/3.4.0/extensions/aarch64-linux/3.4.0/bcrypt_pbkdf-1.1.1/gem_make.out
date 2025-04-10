@@ -1,9 +1,0 @@
-current directory: /usr/local/bundle/ruby/3.4.0/gems/bcrypt_pbkdf-1.1.1/ext/mri
-/usr/local/bin/ruby extconf.rb
-creating Makefile
-
-current directory: /usr/local/bundle/ruby/3.4.0/gems/bcrypt_pbkdf-1.1.1/ext/mri
-make DESTDIR\= sitearchdir\=./.gem.20250410-1-waiiye sitelibdir\=./.gem.20250410-1-waiiye clean
-current directory: /usr/local/bundle/ruby/3.4.0/gems/bcrypt_pbkdf-1.1.1/ext/mri
-make DESTDIR\= sitearchdir\=./.gem.20250410-1-waiiye sitelibdir\=./.gem.20250410-1-waiiye
-make failedNo such file or directory - make

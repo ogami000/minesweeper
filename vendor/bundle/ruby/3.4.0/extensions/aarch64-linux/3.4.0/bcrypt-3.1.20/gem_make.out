@@ -1,9 +1,0 @@
-current directory: /usr/local/bundle/ruby/3.4.0/gems/bcrypt-3.1.20/ext/mri
-/usr/local/bin/ruby extconf.rb
-creating Makefile
-
-current directory: /usr/local/bundle/ruby/3.4.0/gems/bcrypt-3.1.20/ext/mri
-make DESTDIR\= sitearchdir\=./.gem.20250410-1-azhapm sitelibdir\=./.gem.20250410-1-azhapm clean
-current directory: /usr/local/bundle/ruby/3.4.0/gems/bcrypt-3.1.20/ext/mri
-make DESTDIR\= sitearchdir\=./.gem.20250410-1-azhapm sitelibdir\=./.gem.20250410-1-azhapm
-make failedNo such file or directory - make
