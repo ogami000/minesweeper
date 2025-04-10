@@ -18,6 +18,8 @@ services:
 
     volumes:
       - ./backend:/backend
+      - ./vendor/bundle:/usr/local/bundle
+
     depends_on:
       - db
     stdin_open: true

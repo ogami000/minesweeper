@@ -1,0 +1,9 @@
+current directory: /usr/local/bundle/ruby/3.4.0/gems/ed25519-1.3.0/ext/ed25519_ref10
+/usr/local/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /usr/local/bundle/ruby/3.4.0/gems/ed25519-1.3.0/ext/ed25519_ref10
+make DESTDIR\= sitearchdir\=./.gem.20250410-1-xrzpwe sitelibdir\=./.gem.20250410-1-xrzpwe clean
+current directory: /usr/local/bundle/ruby/3.4.0/gems/ed25519-1.3.0/ext/ed25519_ref10
+make DESTDIR\= sitearchdir\=./.gem.20250410-1-xrzpwe sitelibdir\=./.gem.20250410-1-xrzpwe
+make failedNo such file or directory - make

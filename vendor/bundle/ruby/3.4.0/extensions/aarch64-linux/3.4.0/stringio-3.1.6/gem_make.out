@@ -1,0 +1,9 @@
+current directory: /usr/local/bundle/ruby/3.4.0/gems/stringio-3.1.6/ext/stringio
+/usr/local/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /usr/local/bundle/ruby/3.4.0/gems/stringio-3.1.6/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20250410-1-gcqpg0 sitelibdir\=./.gem.20250410-1-gcqpg0 clean
+current directory: /usr/local/bundle/ruby/3.4.0/gems/stringio-3.1.6/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20250410-1-gcqpg0 sitelibdir\=./.gem.20250410-1-gcqpg0
+make failedNo such file or directory - make
