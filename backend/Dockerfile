@@ -23,7 +23,10 @@ RUN apt-get update -qq && \
 ENV RAILS_ENV="development" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="development" \
+    BUNDLE_CONFIG="/usr/local/bundle/config"
+
+RUN bundle config frozen false
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build
@@ -66,3 +69,7 @@ ENTRYPOINT ["/backend/bin/docker-entrypoint"]
 
 # Start server via Thruster by default, this can be overwritten at runtime
 CMD ["./bin/thrust", "./bin/rails", "server"]
+
+USER root
+RUN chown -R rails:rails /usr/local/bundle
+USER rails
