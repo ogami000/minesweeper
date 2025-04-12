@@ -3,6 +3,7 @@ import { Home } from "./pages/Home";
 import Signup from "./components/Signup";
 import FetchData from "./components/FetchData";
 import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/data" element={<FetchData />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );

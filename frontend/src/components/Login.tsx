@@ -12,6 +12,8 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
+  // 省略
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -19,10 +21,11 @@ const Login: React.FC = () => {
       const response = await axios.post("http://localhost:3001/login", {
         user: { email, password },
       });
-      setToken(response.data.authorization); // JWTトークンを状態に保存
+      const token = response.data.authorization;
+      setToken(token);
+      localStorage.setItem("authToken", token);
       alert("ログイン成功！");
-      // トークンを localStorage に保存
-      localStorage.setItem("authToken", response.data.authorization);
+      window.location.href = "/dashboard"; // ← ここで遷移
     } catch (err) {
       setError(
         "ログインに失敗しました。メールアドレスとパスワードを確認してください。"
