@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import axios from "axios";
 import { useTimer } from "./useTimer";
 import {
   Cell,
@@ -175,6 +176,36 @@ export const useMinesweeper = () => {
 
         if (checkGameClear(newBoard)) {
           setGameClear(true);
+
+          // 成功時に保存
+          const token = localStorage.getItem("authToken");
+          if (!token) {
+            console.log("トークンが存在しません");
+          } else {
+            console.log("トークン:", token);
+          }
+          if (token) {
+            axios
+              .post(
+                "http://localhost:3001/api/clear_records",
+                { clear_record: { time_in_seconds: time } },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`, // ← ここが必須！
+                    "Content-Type": "application/json",
+                  },
+                }
+              )
+              .then(() => console.log("記録保存成功"))
+              .catch((err) => console.error("記録保存失敗", err));
+          } else {
+            axios
+              .post("http://localhost:3001/api/clear_records", {
+                clear_record: { time_in_seconds: time },
+              })
+              .then(() => console.log("記録保存成功"))
+              .catch((err) => console.error("記録保存失敗", err));
+          }
         }
 
         if (newBoard[pos.y][pos.x].isMine) {
@@ -193,6 +224,7 @@ export const useMinesweeper = () => {
       initialReveal,
       mineCount,
       startTimer,
+      time,
     ]
   );
 

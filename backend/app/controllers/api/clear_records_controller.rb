@@ -1,8 +1,18 @@
 module Api
   class ClearRecordsController < ApplicationController
+    # before_action :authenticate_user!
+
     def create
       clear_record = ClearRecord.new(clear_record_params)
       clear_record.user = current_user if user_signed_in?
+
+      # Rails.logger.debug "current_user: #{current_user&.id}"
+      # Rails.logger.debug "user_signed_in?: #{user_signed_in?}"
+      # Rails.logger.debug "Authorization Header: #{request.headers['Authorization']}"
+      # Rails.logger.debug "Warden user: #{warden.user}"
+      # Rails.logger.debug "Current user: #{current_user.inspect}"
+      # Rails.logger.debug "Signed in?: #{user_signed_in?}"
+
 
       if clear_record.save
         render json: { message: "記録を保存しました" }, status: :created

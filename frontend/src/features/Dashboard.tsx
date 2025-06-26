@@ -10,6 +10,7 @@ const Dashboard: React.FC = () => {
     if (!token) {
       navigate("/login");
     }
+    console.log(localStorage.getItem("authToken"));
   }, [navigate]);
 
   const handleLogout = () => {
