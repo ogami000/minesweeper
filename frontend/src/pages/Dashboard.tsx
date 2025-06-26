@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CenteredWrapper } from "../components/CenteredWrapper";
 
-const Dashboard: React.FC = () => {
+export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,5 +37,3 @@ const Dashboard: React.FC = () => {
     </CenteredWrapper>
   );
 };
-
-export default Dashboard;

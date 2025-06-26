@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { CenteredWrapper } from "../components/CenteredWrapper";
 
-const Login: React.FC = () => {
+export const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +19,7 @@ const Login: React.FC = () => {
       const token = response.data.authorization;
       setToken(token);
       localStorage.setItem("authToken", token);
-      window.location.href = "/dashboard";
+      window.location.href = "/";
     } catch (e) {
       setError(`ログイン失敗です。${e}`);
     }
@@ -75,5 +75,3 @@ const Login: React.FC = () => {
     </CenteredWrapper>
   );
 };
-
-export default Login;

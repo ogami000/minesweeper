@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
-import Signup from "./features/Signup";
-import FetchData from "./features/FetchData";
-import Login from "./features/Login";
-import Dashboard from "./features/Dashboard";
-import Header from "./components/Header";
+import { Signup } from "./pages/Signup";
+import { FetchData } from "./pages/FetchData";
+import { Login } from "./pages/Login";
+import { Dashboard } from "./pages/Dashboard";
+import { Ranking } from "./pages/Ranking";
+import { Header } from "./components/Header";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/data" element={<FetchData />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/ranking" element={<Ranking />} />
       </Routes>
     </BrowserRouter>
   );

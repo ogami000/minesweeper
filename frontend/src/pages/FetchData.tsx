@@ -7,7 +7,7 @@ interface ApiResponse {
   email: string;
 }
 
-const FetchData: React.FC = () => {
+export const FetchData: React.FC = () => {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -39,5 +39,3 @@ const FetchData: React.FC = () => {
     </div>
   );
 };
-
-export default FetchData;

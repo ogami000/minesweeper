@@ -10,7 +10,7 @@ interface UserData {
   passwordConfirmation: string;
 }
 
-const Signup: React.FC = () => {
+export const Signup: React.FC = () => {
   const [formData, setFormData] = useState<UserData>({
     nickname: "",
     email: "",
@@ -107,5 +107,3 @@ const Signup: React.FC = () => {
     </CenteredWrapper>
   );
 };
-
-export default Signup;

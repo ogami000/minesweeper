@@ -188,7 +188,12 @@ export const useMinesweeper = () => {
             axios
               .post(
                 "http://localhost:3001/api/clear_records",
-                { clear_record: { time_in_seconds: time } },
+                {
+                  clear_record: {
+                    time_in_seconds: time,
+                    difficulty: currentDifficulty,
+                  },
+                },
                 {
                   headers: {
                     Authorization: `Bearer ${token}`, // ← ここが必須！
@@ -201,7 +206,10 @@ export const useMinesweeper = () => {
           } else {
             axios
               .post("http://localhost:3001/api/clear_records", {
-                clear_record: { time_in_seconds: time },
+                clear_record: {
+                  time_in_seconds: time,
+                  difficulty: currentDifficulty,
+                },
               })
               .then(() => console.log("記録保存成功"))
               .catch((err) => console.error("記録保存失敗", err));
@@ -218,6 +226,7 @@ export const useMinesweeper = () => {
     [
       additionalReveal,
       boardSize,
+      currentDifficulty,
       firstClick,
       gameClear,
       gameOver,
