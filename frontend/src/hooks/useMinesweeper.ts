@@ -126,6 +126,8 @@ export const useMinesweeper = () => {
   const [flagCount, setFlagCount] = useState(mineCount);
   const { time, isRunning, startTimer, stopTimer, resetTimer } = useTimer();
 
+  axios.defaults.withCredentials = true;
+
   const revealCell = useCallback(
     (pos: Position) => {
       if (gameOver || gameClear) return;
@@ -187,7 +189,7 @@ export const useMinesweeper = () => {
           if (token) {
             axios
               .post(
-                "http://localhost/api/clear_records",
+                "http://ogami-app.com/api/clear_records",
                 {
                   clear_record: {
                     time_in_seconds: time,
@@ -205,7 +207,7 @@ export const useMinesweeper = () => {
               .catch((err) => console.error("記録保存失敗", err));
           } else {
             axios
-              .post("http://localhost/api/clear_records", {
+              .post("http://ogami-app.com/api/clear_records", {
                 clear_record: {
                   time_in_seconds: time,
                   difficulty: currentDifficulty,
