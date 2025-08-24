@@ -35,7 +35,7 @@ export const Signup: React.FC = () => {
     }
 
     try {
-      await axios.post("http://localhost:3001/signup", {
+      await axios.post("http://localhost/api/signup", {
         user: {
           nickname,
           email,
@@ -44,7 +44,7 @@ export const Signup: React.FC = () => {
         },
       });
 
-      const loginRes = await axios.post("http://localhost:3001/login", {
+      const loginRes = await axios.post("http://localhost/api/login", {
         user: { email, password },
       });
 

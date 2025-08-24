@@ -11,7 +11,7 @@ export const Ranking: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/api/clear_records")
+      .get("http://localhost/api/clear_records")
       .then((res) => {
         setData(res.data);
         setLoading(false);

@@ -187,7 +187,7 @@ export const useMinesweeper = () => {
           if (token) {
             axios
               .post(
-                "http://localhost:3001/api/clear_records",
+                "http://localhost/api/clear_records",
                 {
                   clear_record: {
                     time_in_seconds: time,
@@ -205,7 +205,7 @@ export const useMinesweeper = () => {
               .catch((err) => console.error("記録保存失敗", err));
           } else {
             axios
-              .post("http://localhost:3001/api/clear_records", {
+              .post("http://localhost/api/clear_records", {
                 clear_record: {
                   time_in_seconds: time,
                   difficulty: currentDifficulty,

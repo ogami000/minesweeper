@@ -7,7 +7,7 @@ export const Header: React.FC = () => {
   const [nickname, setNickname] = useState<string>("");
 
   axios
-    .get("http://localhost:3001/me", {
+    .get("http://localhost/api/me", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },

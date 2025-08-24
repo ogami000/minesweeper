@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
-  namespace :api do
-    resources :clear_records, only: [:create, :index]
-  end
+  resources :clear_records, only: [:create, :index]
   # devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

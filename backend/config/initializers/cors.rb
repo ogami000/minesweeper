@@ -16,7 +16,7 @@
 # end
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'http://localhost:3000'  # フロントエンドのURLを設定
+    origins 'http://localhost'  # フロントエンドのURLを設定
 
     resource '*',
       headers: :any,
