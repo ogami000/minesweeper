@@ -19,8 +19,10 @@ class ApplicationController < ActionController::API
   include ActionController::Helpers
   include Devise::Controllers::Helpers
 
-  # before_action :authenticate_optional_user!
 
+  # protect_from_forgery with: :null_session, if: -> { request.format.json? }
+
+  # before_action :authenticate_optional_user!
   private
 
   def authenticate_optional_user!

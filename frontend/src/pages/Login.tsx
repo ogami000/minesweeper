@@ -13,7 +13,7 @@ export const Login: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost/api/login", {
+      const response = await axios.post("/api/login", {
         user: { email, password },
       });
       const token = response.data.authorization;

@@ -13,6 +13,7 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
+    user: root
     command: >
       bash -c "mkdir -p ./tmp/sockets && rails db:migrate && rm -f ./tmp/pids/server.pid && bundle exec puma -C ./config/puma.rb"
     volumes:
