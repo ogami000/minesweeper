@@ -150,7 +150,6 @@ export const useMinesweeper = () => {
               }
             : { "Content-Type": "application/json" },
         });
-        console.log("記録保存成功");
       } catch (err) {
         console.error("記録保存失敗", err);
       }
