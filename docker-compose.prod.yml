@@ -34,7 +34,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./frontend/dist:/frontend/dist:ro
+      - ./frontend/dist:/frontend/dist
 
   nginx:
     image: nginx:stable-alpine
