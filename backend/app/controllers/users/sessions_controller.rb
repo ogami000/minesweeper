@@ -4,14 +4,14 @@ module Users
 
     private
 
-    # def respond_with(resource, _opts = {})
-    #   render json: { message: 'ログイン成功', user: resource }, status: :ok
-    # end
     def respond_with(resource, _opts = {})
-      token = request.env['warden-jwt_auth.token'] # ← JWTトークンを取得
+      token = request.env['warden-jwt_auth.token']
+      Rails.logger.info "resource.id=#{resource.id}, email=#{resource.email}"
+
+
       render json: {
         message: 'ログイン成功',
-        authorization: token, # ← これで frontend に返す
+        authorization: token,
         user: resource
       }, status: :ok
     end

@@ -1,23 +1,9 @@
-import axios from "axios";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { Hamburger } from "./Hamburger";
+import { Link } from "react-router-dom";
 
 export const Header: React.FC = () => {
-  const [nickname, setNickname] = useState<string>("");
-
-  axios
-    .get("http://localhost/api/me", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-      },
-    })
-    .then((res) => {
-      setNickname(res.data.nickname);
-    })
-    .catch((err) => {
-      console.error("認証エラーや未ログインです", err);
-    });
+  const { nickname } = useAuth();
 
   return (
     <header className="bg-white shadow-md py-2 px-6 flex justify-between items-center">

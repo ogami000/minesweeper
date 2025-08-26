@@ -3,6 +3,7 @@ import { CenteredWrapper } from "../components/CenteredWrapper";
 import axios from "axios";
 import { ClearRecord } from "../types/ranking";
 import { Difficulty } from "../types/minesweeper";
+import { API_URL } from "../config/vite";
 
 export const Ranking: React.FC = () => {
   const [data, setData] = useState<ClearRecord[]>([]);
@@ -11,7 +12,7 @@ export const Ranking: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost/api/clear_records")
+      .get(`${API_URL}/api/clear_records`)
       .then((res) => {
         setData(res.data);
         setLoading(false);

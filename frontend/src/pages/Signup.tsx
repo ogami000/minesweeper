@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { CenteredWrapper } from "../components/CenteredWrapper";
+import { API_URL } from "../config/vite";
+import { useAuth } from "../context/AuthContext";
 
 interface UserData {
   nickname: string;
@@ -19,6 +21,7 @@ export const Signup: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { setToken } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,7 +38,7 @@ export const Signup: React.FC = () => {
     }
 
     try {
-      await axios.post("http://localhost/api/signup", {
+      await axios.post(`${API_URL}/api/signup`, {
         user: {
           nickname,
           email,
@@ -44,17 +47,16 @@ export const Signup: React.FC = () => {
         },
       });
 
-      const loginRes = await axios.post("http://localhost/api/login", {
+      const loginRes = await axios.post(`${API_URL}/api/login`, {
         user: { email, password },
       });
 
       const token = loginRes.data.authorization;
       localStorage.setItem("authToken", token);
-
-      alert("登録＆ログイン成功！");
+      setToken(token); // Context に反映
       navigate("/dashboard");
     } catch (e) {
-      setError(`登録に失敗しました。再度お試しください。${e}`);
+      setError(`登録に失敗しました。${e}`);
     }
   };
 
@@ -82,26 +84,20 @@ export const Signup: React.FC = () => {
                   value={formData[field as keyof UserData]}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full px-4 py-2 border rounded-xl"
                 />
               </div>
             )
           )}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 mt-4 rounded-xl hover:bg-blue-600 transition duration-200"
+            className="w-full bg-blue-500 text-white py-2 mt-4 rounded-xl"
           >
             登録
           </button>
         </form>
-        <p className="mt-6 text-center text-sm text-gray-600">
-          すでにアカウントをお持ちの方は
-          <Link
-            to="/login"
-            className="text-blue-500 hover:underline hover:text-blue-700 transition duration-200"
-          >
-            こちら
-          </Link>
+        <p className="mt-6 text-center text-sm">
+          すでにアカウントをお持ちの方は <Link to="/login">こちら</Link>
         </p>
       </div>
     </CenteredWrapper>

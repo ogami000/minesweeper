@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mysql:8.4
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: app_db
+    ports:
+      - "3306:3306"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env.development
+    user: root
+    command: >
+      bash -c "mkdir -p ./tmp/sockets && rails db:migrate && rm -f ./tmp/pids/server.pid && bundle exec puma -C ./config/puma.rb"
+    volumes:
+      - ./backend:/backend
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=password
+      - TZ=Asia/Tokyo
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./frontend:/frontend
+    command: yarn dev --host
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  mysql-data:

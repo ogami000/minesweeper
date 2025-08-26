@@ -1,18 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export const Hamburger = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { token, logout } = useAuth();
+  const isLoggedIn = !!token;
 
   const toggleMenu = () => setIsOpen(!isOpen);
-
-  const isLoggedIn = !!localStorage.getItem("authToken");
-
-  const handleLogout = () => {
-    localStorage.removeItem("authToken");
-  };
 
   // 外クリックで閉じる処理
   useEffect(() => {
@@ -22,9 +19,7 @@ export const Hamburger = () => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -53,7 +48,7 @@ export const Hamburger = () => {
           </Link>
           {isLoggedIn ? (
             <Link
-              onClick={handleLogout}
+              onClick={logout}
               to="/login"
               className="text-gray-700 hover:text-blue-600 font-medium"
             >

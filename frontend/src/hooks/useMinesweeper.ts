@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useTimer } from "./useTimer";
 import {
@@ -8,10 +8,10 @@ import {
   DIFFICULTY_SETTINGS,
   Position,
 } from "../types/minesweeper";
+import { API_URL } from "../config/vite";
 
-const isInsideBoard = (pos: Position, boardSize: number) => {
-  return pos.y >= 0 && pos.x >= 0 && pos.y < boardSize && pos.x < boardSize;
-};
+const isInsideBoard = (pos: Position, boardSize: number) =>
+  pos.y >= 0 && pos.x >= 0 && pos.y < boardSize && pos.x < boardSize;
 
 const generateBoard = (
   firstClick: Position | null,
@@ -36,8 +36,8 @@ const generateBoard = (
     }
   }
 
-  const getMineCount = (pos: Position) => {
-    return [-1, 0, 1].reduce(
+  const getMineCount = (pos: Position) =>
+    [-1, 0, 1].reduce(
       (count, dy) =>
         count +
         [-1, 0, 1].reduce((c, dx) => {
@@ -50,7 +50,6 @@ const generateBoard = (
         }, 0),
       0
     );
-  };
 
   return board.map((row, y) =>
     row.map((cell, x) => ({ ...cell, adjacentMines: getMineCount({ y, x }) }))
@@ -126,12 +125,44 @@ export const useMinesweeper = () => {
   const [flagCount, setFlagCount] = useState(mineCount);
   const { time, isRunning, startTimer, stopTimer, resetTimer } = useTimer();
 
+  // 記録保存済みフラグ
+  const hasSavedRecord = useRef(false);
+
   axios.defaults.withCredentials = true;
+
+  /** 記録保存処理 */
+  const saveClearRecord = useCallback(
+    async (timeInSeconds: number, difficulty: Difficulty) => {
+      if (hasSavedRecord.current) return; // 二重防止
+      hasSavedRecord.current = true;
+
+      const token = localStorage.getItem("authToken");
+      const payload = {
+        clear_record: { time_in_seconds: timeInSeconds, difficulty },
+      };
+
+      try {
+        await axios.post(`${API_URL}/api/clear_records`, payload, {
+          headers: token
+            ? {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              }
+            : { "Content-Type": "application/json" },
+        });
+        console.log("記録保存成功");
+      } catch (err) {
+        console.error("記録保存失敗", err);
+      }
+    },
+    []
+  );
 
   const revealCell = useCallback(
     (pos: Position) => {
       if (gameOver || gameClear) return;
 
+      // 初回クリック
       if (!firstClick) {
         setFirstClick(pos);
         startTimer();
@@ -161,6 +192,7 @@ export const useMinesweeper = () => {
         );
         newBoard[pos.y][pos.x].isRevealed = true;
 
+        // 周囲を自動展開
         if (newBoard[pos.y][pos.x].adjacentMines === 0) {
           [-1, 0, 1].forEach((dy) => {
             [-1, 0, 1].forEach((dx) => {
@@ -176,48 +208,13 @@ export const useMinesweeper = () => {
           });
         }
 
+        // クリア判定
         if (checkGameClear(newBoard)) {
           setGameClear(true);
-
-          // 成功時に保存
-          const token = localStorage.getItem("authToken");
-          if (!token) {
-            console.log("トークンが存在しません");
-          } else {
-            console.log("トークン:", token);
-          }
-          if (token) {
-            axios
-              .post(
-                "http://ogami-app.com/api/clear_records",
-                {
-                  clear_record: {
-                    time_in_seconds: time,
-                    difficulty: currentDifficulty,
-                  },
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`, // ← ここが必須！
-                    "Content-Type": "application/json",
-                  },
-                }
-              )
-              .then(() => console.log("記録保存成功"))
-              .catch((err) => console.error("記録保存失敗", err));
-          } else {
-            axios
-              .post("http://ogami-app.com/api/clear_records", {
-                clear_record: {
-                  time_in_seconds: time,
-                  difficulty: currentDifficulty,
-                },
-              })
-              .then(() => console.log("記録保存成功"))
-              .catch((err) => console.error("記録保存失敗", err));
-          }
+          saveClearRecord(time, currentDifficulty);
         }
 
+        // ゲームオーバー判定
         if (newBoard[pos.y][pos.x].isMine) {
           setGameOver(true);
         }
@@ -236,6 +233,7 @@ export const useMinesweeper = () => {
       mineCount,
       startTimer,
       time,
+      saveClearRecord,
     ]
   );
 
@@ -265,6 +263,7 @@ export const useMinesweeper = () => {
     stopTimer();
     setGameOver(false);
     setGameClear(false);
+    hasSavedRecord.current = false; // フラグをリセット
     setFlagCount(mineCount);
     setBoard(generateBoard(null, boardSize, mineCount));
     setFirstClick(null);
