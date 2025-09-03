@@ -7,7 +7,7 @@
 - 認証: Devise + JWT
 - データベース: MySQL
 - インフラ: Docker, Nginx
-- デプロイ: Vercel / Render
+- Xserver VPS 上に Docker Compose を利用してデプロイ
 
 ### 主な機能
 - ユーザー登録 / ログイン（JWT認証）
